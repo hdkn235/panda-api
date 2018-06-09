@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hd.api.dao.LoginUserMapper">
+  <resultMap id="BaseResultMap" type="LoginUser">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <constructor>
+      <idArg column="UserId" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="Phone" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="LoginName" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="PassWord" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="LoginType" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="UpdateDate" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="LimitIp" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="LoginIp" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="Remark" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="Status" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="LastTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="ClientId" javaType="java.lang.String" jdbcType="VARCHAR" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    UserId, Phone, LoginName, PassWord, LoginType, UpdateDate, LimitIp, LoginIp, Remark, 
+    Status, LastTime, ClientId
+  </sql>
+  
+  <!-- 自定义 -->
+  <update id="updatePassWordByUserId" parameterType="LoginUser">
+    update LoginUser set PassWord = #{password},UpdateDate = GETDATE() where UserId = #{userId}
+  </update>
+  
+  <select id="selectByPhone" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from LoginUser
+    where phone = #{phone,jdbcType=VARCHAR}
+  </select>
+  
+  <update id="clearClientId">
+    update LoginUser
+    set ClientId = null
+    where ClientId = #{cid,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="resetClinetId">
+    update LoginUser
+    set ClientId = null
+    where UserId = #{userId}
+  </update>
+  
+  <select id="listByOrgId" resultMap="BaseResultMap">
+	SELECT  
+	<include refid="Base_Column_List" />
+	FROM    LoginUser
+	WHERE   UserId IN ( SELECT  UserId
+	                    FROM    UserInfo u
+	                    WHERE   OrgId = #{orgId} )
+  </select>
+  <!-- 自定义 -->
+</mapper>

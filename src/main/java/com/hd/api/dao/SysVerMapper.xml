@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hd.api.dao.SysVerMapper">
+  <resultMap id="BaseResultMap" type="SysVer">
+    <constructor>
+      <idArg column="SysVerId" javaType="java.lang.String" jdbcType="CHAR" />
+      <arg column="Version" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="AppUrl" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="Description" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="CreateTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="ManualUrl" javaType="java.lang.String" jdbcType="VARCHAR" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    SysVerId, Version, AppUrl, Description, CreateTime, ManualUrl
+  </sql>
+  
+  <!-- 自定义 -->
+  <select id="getLatestSysVer" resultType="SysVerDTO">
+  	select top 1 Version, AppUrl, Description DescriptionStr, 
+  	cast(DATEDIFF(s,'1970-01-01 08:00:00',CreateTime) as varchar(20)) CreateTime
+    from SysVer
+    ORDER BY CreateTime DESC
+  </select>
+  
+  <select id="getAppManual" resultType="com.hd.api.dto.AppManualDTO">
+  	select top 1 ManualUrl
+    from SysVer
+    WHERE Version=#{version}
+    ORDER BY CreateTime DESC
+  </select>
+</mapper>

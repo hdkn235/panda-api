@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hd.api.dao.DictClassMapper">
+  <resultMap id="BaseResultMap" type="DictClass">
+    <constructor>
+      <idArg column="DictClassId" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="Name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="Code" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="Remark" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="Status" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="CreateTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    DictClassId, Name, Code, Remark, Status, CreateTime
+  </sql>
+  
+  <!-- 自定义 -->
+  
+  <select id="listDictByClassCode" parameterType="java.lang.String" resultType="DictDTO">
+	SELECT  d.Code, d.Value FROM  Dict d
+	INNER JOIN DictClass dc ON d.DictClassId = dc.DictClassId
+	WHERE dc.Code = #{code} order by OrderNumber
+  </select>
+  
+  <!-- 自定义 -->
+</mapper>

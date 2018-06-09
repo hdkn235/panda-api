@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hd.api.dao.DictMapper">
+	<resultMap id="BaseResultMap" type="Dict">
+		<constructor>
+			<idArg column="DictId" javaType="java.lang.String" jdbcType="VARCHAR" />
+			<arg column="Code" javaType="java.lang.String" jdbcType="VARCHAR" />
+			<arg column="Value" javaType="java.lang.String" jdbcType="VARCHAR" />
+			<arg column="DictClassId" javaType="java.lang.String" jdbcType="VARCHAR" />
+			<arg column="OrderNumber" javaType="java.lang.Integer" jdbcType="INTEGER" />
+			<arg column="Remark" javaType="java.lang.String" jdbcType="VARCHAR" />
+			<arg column="Status" javaType="java.lang.Integer" jdbcType="INTEGER" />
+			<arg column="CreateTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+		</constructor>
+	</resultMap>
+	<sql id="Base_Column_List">
+		DictId, Code, Value, DictClassId, OrderNumber, Remark, Status, CreateTime
+	</sql>
+
+	<!-- 自定义 -->
+	<select id="getByCode" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from Dict
+		where Code = #{code,jdbcType=VARCHAR}
+	</select>
+
+	<select id="getByClassAndCode" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM Dict
+		WHERE DictClassId = ( SELECT DictClassId
+		FROM DictClass
+		WHERE Code = #{dictClassCode}
+		)
+		AND Code = #{dictCode}
+	</select>
+
+	<select id="getByDictClassCode" resultType="DictDTO">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM Dict
+		WHERE DictClassId = ( SELECT DictClassId
+		FROM DictClass
+		WHERE Code = #{dictClassCode}
+		)
+		Order by OrderNumber
+	</select>
+
+	<select id="getByDictClassId" resultType="DictDTO">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM Dict
+		WHERE DictClassId = #{dictClassId}
+		Order by OrderNumber
+	</select>
+
+	<select id="getDictClassByDictCode" resultType="DictClass">
+		SELECT
+		<include refid="Base_Column_List" />
+		from DictClass
+		where DictClassId in
+		(select DictClassId from Dict where Code = #{code})
+	</select>
+
+	<select id="getAreaTypeByCity" resultType="hashmap">
+		Select Code from Dict where DictClassId =
+		(Select DictClassId from DictClass where Code = 'rgfq')
+		And Remark like #{city}
+	</select>
+
+	<!-- 自定义 -->
+</mapper>
